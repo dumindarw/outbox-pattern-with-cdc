@@ -1,0 +1,8 @@
+postgres/data
+kafka/data
+zookeeper/data
+zookeeper/logs
+location-client/node-modules
+location-service/.idea
+location-service/target
+location-service/.mvn

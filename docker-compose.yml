@@ -1,0 +1,78 @@
+version: "3.9"
+
+services:
+  zookeeper: 
+    image: quay.io/debezium/zookeeper:1.9
+    ports:
+      - 2888:2888
+      - 2181:2181
+      - 3888:3888
+    environment:
+      LOG_LEVEL: DEBUG
+      SERVER_ID: 1
+    #volumes:
+      #- ./zookeeper/data:/zookeeper/data
+      #- ./zookeeper/txns:/zookeeper/txns
+      #- ./zookeeper/logs:/zookeeper/logs
+    networks:
+      - debz-network 
+
+  kafka: 
+    image: quay.io/debezium/kafka:1.9
+    environment:
+      BROKER_ID: 1
+      #HOST_NAME: 0.0.0.0
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://192.168.1.7:9092
+      ADVERTISED_HOST_NAME: kafka #PLAINTEXT://kafka:9092 
+      ZOOKEEPER_CONNECT: zookeeper:2181
+      LOG_LEVEL: DEBUG
+    #volumes:
+     # - ./kafka/data:/kafka/data
+    ports:
+      - 9092:9092
+    depends_on: 
+      - zookeeper
+    networks:
+      - debz-network
+
+  postgres:
+    image: quay.io/debezium/postgres:14
+    environment:
+      POSTGRES_USER: pguser
+      POSTGRES_PASSWORD: pgpwd789
+      POSTGRES_DB: event_locations
+    volumes:
+      - ./postgres/data:/var/lib/postgresql/data
+      - ./postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - 15432:5432
+    networks:
+      - debz-network
+
+  kafka-connect: 
+    image: quay.io/debezium/connect:1.9
+    ports:
+      - 8083:8083
+    environment:
+      ADVERTISED_HOST_NAME: kafka
+      BOOTSTRAP_SERVERS: kafka:9092
+      GROUP_ID: 1
+      CONFIG_STORAGE_TOPIC: evtloc_connect_configs
+      OFFSET_STORAGE_TOPIC: evtloc_connect_offsets
+      STATUS_STORAGE_TOPIC: evtloc_connect_statuses
+    networks:
+      - debz-network
+
+  adminer:
+    image: adminer
+    container_name: adminer
+    restart: always
+    ports:
+      - 8082:8080
+    networks:
+      - debz-network
+
+networks:
+  debz-network:
+    external: true
