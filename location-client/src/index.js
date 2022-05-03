@@ -8,7 +8,7 @@ import { createClient } from 'graphql-ws';
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
 
 const wsLink = new GraphQLWsLink(createClient({
-  url: 'ws://localhost:8088/graphql',
+  url: process.env.REACT_APP_WS_URL,
 }));
 
 const client = new ApolloClient({
