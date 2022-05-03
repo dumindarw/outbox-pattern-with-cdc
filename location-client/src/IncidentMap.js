@@ -9,20 +9,16 @@ import { useEffect, useState } from 'react';
 import { Marker, Popup } from 'react-leaflet';
 
 const INCIDENT_SUBSCRIPTION = gql`
-    subscription{
-        incidentCreated{
-        incidentName
-        incidentId
-            incidentLocation{
+    subscription{ 
+        incidentCreated{ 
+        incidentName 
+        incidentId 
+            incidentLocation{ 
                 coordinates
             }
         }
     }
 `;
-
-
-
-
 
 function IncidentMap(){
 
@@ -30,13 +26,9 @@ function IncidentMap(){
     const [coordinates, setCoordinates] = useState([]);
 
     useEffect(() => {
-        console.log("Calling useeffect ...");
-        console.log(data);
-        if(!loading){
-            console.log(data);
+        if(!loading && data)
             setCoordinates((prvState) => ([...prvState, data.incidentCreated.incidentLocation.coordinates]));
-        }
-    }, []);
+    }, [data, loading]);
 
     return(
         <MapContainer  center={[7.70, 81.18]} zoom={8} scrollWheelZoom={false} style={{ height: '800px', width: '600px' }}>
@@ -45,11 +37,11 @@ function IncidentMap(){
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
             {
-                
+                !loading && data &&
                 coordinates.map(coordinate => 
-                    <Marker key={data.incidentCreated.incidentLocation.incidentId} position={coordinate} icon={new Icon({iconUrl: markerIconPng, iconSize: [25, 41], iconAnchor: [12, 41]})} >
+                    <Marker key={data.incidentCreated.incidentId} position={coordinate} icon={new Icon({iconUrl: markerIconPng, iconSize: [25, 41], iconAnchor: [12, 41]})} >
                         <Popup>
-                        New Incident
+                        {data.incidentCreated.incidentName}
                         </Popup>
                     </Marker>
                 )

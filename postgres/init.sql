@@ -29,9 +29,9 @@ FROM tbl_incident_locations;
 */
  /*
  INSERT INTO "tbl_incident_locations" ("incd_name", "incd_location", "created_by", "created_on")
-VALUES ('New Incident 01', ST_AsGeoJSON('POINT(-71.060316 48.432044)')::jsonb, 'rajitha', now());
+VALUES ('New Incident 01', ST_AsGeoJSON('POINT(7.4818 80.3609)')::jsonb, 'rajitha', now());
 
 INSERT INTO "tbl_incident_locations" ("incd_name", "incd_location", "created_by", "created_on")
-VALUES ('New Incident 02', ST_AsGeoJSON('POINT(-70.060316 41.432044)')::jsonb, 'rajitha', now());
+VALUES ('New Incident 02', ST_AsGeoJSON('POINT(7.1118 80.1109)')::jsonb, 'rajitha', now());
 
  */

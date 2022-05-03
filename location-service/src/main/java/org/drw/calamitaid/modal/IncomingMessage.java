@@ -10,7 +10,6 @@ import lombok.Data;
 import javax.json.JsonObject;
 
 @Data
-//@JsonIgnoreProperties({"before"})
 public class IncomingMessage {
 
     @JsonIgnore
