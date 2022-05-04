@@ -1,6 +1,22 @@
 version: "3.9"
 
 services:
+  location-service:
+    image: location-service
+    build: ./location-service/src/main/docker/Dockerfile.native
+    ports:
+      - 8088:8088
+    networks:
+      - debz-network
+
+  location-client:
+    image: location-client
+    build: ./location-client/Dockerfile
+    ports:
+      - 80:80
+    networks:
+      - debz-network
+
   zookeeper: 
     image: quay.io/debezium/zookeeper:1.9
     ports:
