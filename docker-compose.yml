@@ -3,15 +3,18 @@ version: "3.9"
 services:
   location-service:
     image: location-service
-    build: ./location-service/src/main/docker/Dockerfile.native
+    build: 
+      context: ./location-service/
+      dockerfile: Dockerfile.native
     ports:
       - 8088:8088
+    restart: always
     networks:
       - debz-network
 
   location-client:
     image: location-client
-    build: ./location-client/Dockerfile
+    build: ./location-client/
     ports:
       - 80:80
     networks:
@@ -39,7 +42,7 @@ services:
       BROKER_ID: 1
       #HOST_NAME: 0.0.0.0
       KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://192.168.1.7:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092 #PLAINTEXT://192.168.1.7:9092
       ADVERTISED_HOST_NAME: kafka #PLAINTEXT://kafka:9092 
       ZOOKEEPER_CONNECT: zookeeper:2181
       LOG_LEVEL: DEBUG
@@ -79,6 +82,14 @@ services:
       STATUS_STORAGE_TOPIC: evtloc_connect_statuses
     networks:
       - debz-network
+
+  connect-init:
+    build: ./connect
+    restart: always
+    networks:
+      - debz-network          
+    depends_on: 
+      - kafka-connect
 
   adminer:
     image: adminer
