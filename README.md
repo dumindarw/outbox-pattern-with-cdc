@@ -13,7 +13,13 @@ This is sample application that demonstrates
 
 ## Run in Prod
 
-Just 
+Create a Quarkus Native application jar first
+
+`mvnw package -Pnative -DskipTests` then 
+
+`docker-compose build`
+
+after 
 
 `docker-compose up -d`
 
